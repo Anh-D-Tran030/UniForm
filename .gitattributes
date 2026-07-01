@@ -1,0 +1,2 @@
+# Large model weights and checkpoints are intentionally excluded from this repository.
+# Keep tokenizer/config JSON in Git and place binary model files manually as documented in README.md.

@@ -1,0 +1,350 @@
+@import "tailwindcss";
+
+:root {
+  --background: #020B0C;
+  --hero-gradient: #236361;
+  --shadow-olive: #1B1F0E;
+  --surface: #000F0F;
+  --surface-soft: #020B0C;
+  --surface-border: #24484B;
+  --border: #24484B;
+  --primary: #6FE0ED;
+  --primary-hover: #9AF1F8;
+  --accent-line: #468586;
+  --accent-teal: #468586;
+  --highlight: rgba(35, 99, 97, 0.34);
+  --text-main: #F8FAFC;
+  --text-muted: #B7BBB4;
+
+  --foreground: var(--text-main);
+  --surface-subtle: #020B0C;
+  --surface-elevated: #031819;
+  --line: var(--surface-border);
+  --line-strong: var(--accent-line);
+  --ink: var(--text-main);
+  --ink-strong: var(--text-main);
+  --muted: var(--text-muted);
+  --muted-light: #8E9692;
+  --accent: var(--primary);
+  --accent-strong: #9AF1F8;
+  --accent-soft: rgba(35, 99, 97, 0.34);
+  --danger-soft: rgba(111, 224, 237, 0.08);
+  --danger-text: #F8FAFC;
+  --warning-soft: rgba(70, 133, 134, 0.18);
+  --success-soft: rgba(111, 224, 237, 0.14);
+  --panel-shadow: 0 18px 48px rgba(27, 31, 14, 0.34);
+
+  /* Atmosphere — operational instrument */
+  --grid-line: rgba(111, 224, 237, 0.07);
+  --grid-line-strong: rgba(111, 224, 237, 0.12);
+  --glow: rgba(111, 224, 237, 0.22);
+  --glow-strong: rgba(111, 224, 237, 0.4);
+  --noise-opacity: 0.04;
+}
+
+html[data-theme="light"] {
+  --background: #F3FAFA;
+  --surface: #FFFFFF;
+  --surface-soft: #EAF6F6;
+  --border: #C9DEDE;
+  --primary: #0891B2;
+  --primary-hover: #0E7490;
+  --accent-teal: #2C7A7B;
+  --highlight: #D8F6F8;
+  --text-main: #061316;
+  --text-muted: #5F7475;
+
+  --hero-gradient: var(--accent-teal);
+  --shadow-olive: rgba(6, 19, 22, 0.1);
+  --surface-border: var(--border);
+  --accent-line: var(--accent-teal);
+  --foreground: var(--text-main);
+  --surface-subtle: var(--background);
+  --surface-elevated: var(--surface);
+  --line: var(--border);
+  --line-strong: var(--accent-teal);
+  --ink: var(--text-main);
+  --ink-strong: var(--text-main);
+  --muted: var(--text-muted);
+  --muted-light: #7D9293;
+  --accent: var(--primary);
+  --accent-strong: var(--primary-hover);
+  --accent-soft: var(--highlight);
+  --danger-soft: var(--surface-soft);
+  --danger-text: var(--text-main);
+  --warning-soft: var(--highlight);
+  --success-soft: var(--highlight);
+  --panel-shadow: 0 18px 48px rgba(6, 19, 22, 0.08);
+
+  /* Atmosphere — light */
+  --grid-line: rgba(8, 145, 178, 0.08);
+  --grid-line-strong: rgba(8, 145, 178, 0.14);
+  --glow: rgba(8, 145, 178, 0.16);
+  --glow-strong: rgba(8, 145, 178, 0.26);
+  --noise-opacity: 0.03;
+}
+
+html:not([data-theme="light"]) .workspace-app {
+  --glow: transparent;
+  --glow-strong: transparent;
+  --panel-shadow: none;
+}
+
+@theme inline {
+  --color-background: var(--surface-subtle);
+  --color-foreground: var(--ink);
+  --font-sans: var(--font-sans-ui);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono-data);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--surface-subtle);
+}
+
+body {
+  margin: 0;
+  background: var(--surface-subtle);
+  color: var(--ink);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ── Operational-instrument design system ───────────────────────── */
+
+/* Display typeface for headings/numerics */
+.font-display {
+  font-family: var(--font-display), var(--font-sans-ui), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01";
+}
+
+.font-data {
+  font-family: var(--font-mono-data), ui-monospace, "SFMono-Regular", monospace;
+}
+
+/* Atmospheric backdrop: gradient mesh + faint precision grid.
+   Drop into a -z-10 absolutely-positioned layer behind hero/login. */
+.atmosphere {
+  background-image:
+    radial-gradient(60% 55% at 72% 0%, var(--glow) 0%, transparent 60%),
+    radial-gradient(48% 48% at 0% 28%, var(--glow) 0%, transparent 55%);
+}
+
+.grid-field {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(75% 75% at 50% 30%, #000 0%, transparent 80%);
+  mask-image: radial-gradient(75% 75% at 50% 30%, #000 0%, transparent 80%);
+}
+
+/* One orchestrated page-load reveal, staggered by --reveal-delay. */
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+  animation: reveal-rise 0.62s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    animation: none;
+  }
+}
+
+/* ── Engagement layer (ui-ux-pro-max: hero parallax, card lift, CTA glow) ── */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scroll-progress meter pinned to the top of the viewport. */
+.scroll-progress {
+  position: fixed;
+  inset: 0 auto auto 0;
+  z-index: 60;
+  height: 2px;
+  width: 100%;
+  transform: scaleX(var(--scroll, 0));
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+  box-shadow: 0 0 12px -1px var(--glow-strong);
+  will-change: transform;
+}
+
+/* Scroll-triggered reveals. Hidden state only applies once JS confirms it can
+   restore visibility (html.js-reveal), so no-JS users always see content. */
+.js-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.js-reveal [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Pointer-tracked spotlight that warms a card from the cursor position. */
+.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    18rem 18rem at var(--mx, 50%) var(--my, 0%),
+    var(--glow) 0%,
+    transparent 60%
+  );
+}
+
+.spotlight:hover::before {
+  opacity: 1;
+}
+
+/* Hero pointer glow — a soft light that trails the cursor across the hero. */
+.hero-glow {
+  background: radial-gradient(
+    32rem 32rem at var(--mx, 70%) var(--my, 20%),
+    var(--glow) 0%,
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.hero-glow.is-live {
+  opacity: 1;
+}
+
+/* Subtle pointer-parallax tilt for the hero instrument card. */
+[data-tilt] {
+  transform: perspective(900px) rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg));
+  transition: transform 0.25s ease-out;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* Shine sweep across primary CTAs on hover. */
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-130%);
+  background: linear-gradient(
+    100deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 75%
+  );
+  transition: transform 0.7s ease;
+  pointer-events: none;
+}
+
+.shine:hover::after {
+  transform: translateX(130%);
+}
+
+/* Slow drift of the atmospheric mesh for a living backdrop. */
+@keyframes mesh-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -1.5%, 0) scale(1.06);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.atmosphere-animate {
+  animation: mesh-drift 18s ease-in-out infinite;
+}
+
+/* Looping float for accent badges/dots. */
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.float-soft {
+  animation: float-soft 4.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .js-reveal [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .scroll-progress,
+  .hero-glow,
+  .spotlight::before {
+    display: none;
+  }
+  [data-tilt] {
+    transform: none;
+  }
+  .shine::after,
+  .atmosphere-animate,
+  .float-soft {
+    animation: none;
+    transition: none;
+  }
+}

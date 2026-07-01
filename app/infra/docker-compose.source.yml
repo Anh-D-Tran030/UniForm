@@ -1,0 +1,29 @@
+services:
+  minio:
+    image: minio/minio
+    container_name: odc-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+
+  dremio:
+    image: dremio/dremio-oss:latest
+    container_name: uniform-dremio
+    ports:
+      - "9047:9047"
+      - "31010:31010"
+      - "32010:32010"
+    volumes:
+      - dremio_data:/opt/dremio/data
+    depends_on:
+      - minio
+
+volumes:
+  minio_data:
+  dremio_data:
